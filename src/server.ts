@@ -1,12 +1,18 @@
 import fastify from "fastify";
 import { env } from "./env";
-import mongoose from "mongoose";
+import { createGanhador } from "./routes/create-ganhador";
+import { getGanhadores } from "./routes/get-ganhadores";
+import { deleteGanhador } from "./routes/delete-ganhador";
+import { connectionDatabase } from "./config/database";
 
 const app = fastify()
-// conexão mongodb 
-mongoose.connect('mongodb://localhost:27017/teste')
-  .then(() => { console.log('conectado!!') })
-  .catch((err) => { console.log('Erro na conexão', err)})
+
+//Config Conexão ao MongoDB
+connectionDatabase()
+
+app.register(createGanhador)
+app.register(getGanhadores)
+app.register(deleteGanhador)
 
 app.listen({ port: env.PORT }, () => {
    console.log('Server rodando')
