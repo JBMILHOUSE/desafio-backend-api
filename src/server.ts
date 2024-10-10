@@ -7,6 +7,7 @@ import { connectionDatabase } from "./config/database";
 
 import fastifySwagger from "@fastify/swagger";
 import fastifySwaggerUi from "@fastify/swagger-ui";
+import fastifyCors from "@fastify/cors";
 
 const app = fastify()
 
@@ -31,12 +32,21 @@ app.register(fastifySwaggerUi, {
    },
    staticCSP: true,
    transformStaticCSP: (header) => header,
-})
+});
+
+app.register(fastifyCors, {
+   origin: 'http://localhost:5173',
+   methods: ['GET', 'POST', 'DELETE'],
+});
 
 app.register(createGanhador)
 app.register(getGanhadores)
 app.register(deleteGanhador)
 
-app.listen({ port: env.PORT }, () => {
+app.listen({ port: env.PORT }, (err) => {
+   if (err) {
+      console.error('Erro ao iniciar o servidor:', err);
+      process.exit(1);
+   }
    console.log('Server rodando')
 })
